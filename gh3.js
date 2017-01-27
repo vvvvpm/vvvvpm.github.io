@@ -249,7 +249,7 @@
 		callHttpApi : function (apiParams) {
 			apiParams.url = Gh3.Helper.protocol + "://" + Gh3.Helper.domain + "/" + apiParams.service;
             apiParams.beforeSend = function(xhr){
-                xhr.setRequestHeader('Authorization','token e34ea079805307380b9052ac01281f365bf24fee');
+                xhr.setRequestHeader('Authorization','token 3a4637198dc78dd3278f34e05fcb8d4ed2bd711f');
             };
 			if ($.support.cors) {
 				var success = apiParams.success
