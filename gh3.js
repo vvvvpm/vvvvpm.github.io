@@ -248,9 +248,11 @@
 		domain : "api.github.com",
 		callHttpApi : function (apiParams) {
 			apiParams.url = Gh3.Helper.protocol + "://" + Gh3.Helper.domain + "/" + apiParams.service;
-            apiParams.beforeSend = function(xhr){
-                xhr.setRequestHeader('Authorization','token 3a4637198dc78dd3278f34e05fcb8d4ed2bd711f');
-            };
+            var separator = '?';
+			if (apiParams.url.indexOf('?') !== -1) {
+			  separator = '&';
+			}
+			apiParams.url += separator + 'client_id=b46c7f2a451d47e32478&client_secret=93833c0e244067dfa8fdf008b7406ab954785cc3';
 			if ($.support.cors) {
 				var success = apiParams.success
 				if ($.isFunction(success)) {
