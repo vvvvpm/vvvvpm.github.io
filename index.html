@@ -146,6 +146,7 @@
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js" charset="utf-8"></script>
         <script src="https://npmcdn.com/isotope-layout@3/dist/isotope.pkgd.js" charset="utf-8"></script>
+        <script src="jquery.nicescroll.js" charset="utf-8"></script>
         <script src="underscore-min.js"></script>
         <script src="gh3.js" charset="utf-8"></script>
     </head>
@@ -172,6 +173,13 @@
             // external js: isotope.pkgd.js
             // init Isotope
 
+            $("html").niceScroll({
+                cursorcolor: '#ffffff',
+                cursorwidth: 8,
+                cursorborder: 'none',
+                cursorborderradius: 0
+            });
+            
             var $table = $('.table-like').isotope({
               layoutMode: 'vertical',
               getSortData: {
