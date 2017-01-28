@@ -173,8 +173,9 @@
             // external js: isotope.pkgd.js
             // init Isotope
 
-            $("html").niceScroll({
+            var scroll = $("html").niceScroll({
                 cursorcolor: '#ffffff',
+                cursoropacitymin: 0.1,
                 cursorwidth: 8,
                 cursorborder: 'none',
                 cursorborderradius: 0
@@ -189,6 +190,7 @@
             });
             $('#filter').on('input', function() {
                 var filterVal = $('#filter').val().toLowerCase();
+                scroll.resize();
                 $table.isotope({ filter: function() {
                     var atext = $(this).find('.author').text().toLowerCase();
                     var ptext = $(this).find('.pack').text().toLowerCase();
@@ -242,6 +244,7 @@
                                 date: '.date'
                               }
                             });
+                            scroll.resize();
                             pack.fetchContents(function (err, res) { if(err) { throw "outch ..." }
                             pack.eachContent(function (version) { if(version.type == 'file') {
                                 if(version.name.endsWith('.vpack'))
@@ -267,6 +270,7 @@
                                             $vlist.isotope('layout');
                                         });
                                         $table.isotope('layout');
+                                        scroll.resize();
                                     });
                                 }
                             }});
