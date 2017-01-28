@@ -190,12 +190,12 @@
             });
             $('#filter').on('input', function() {
                 var filterVal = $('#filter').val().toLowerCase();
-                scroll.resize();
                 $table.isotope({ filter: function() {
                     var atext = $(this).find('.author').text().toLowerCase();
                     var ptext = $(this).find('.pack').text().toLowerCase();
                     return atext.includes(filterVal) || ptext.includes(filterVal);
                 }});
+                setTimeout(function(){ scroll.resize(); }, 400);
             });
 
             // change is-checked class on buttons
