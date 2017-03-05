@@ -437,7 +437,7 @@
                 var commit = $('#SubmitCommit').val();
                 var file = $('#SubmitFile')[0].files[0];
                 $('#SubmitVPack').attr('disabled', '');
-                if(file && author != "" && name != "" && version != "" && commit != "")
+                if(file && author != "" && name != "" && version != "" && commit != "" && email != "")
                 {
                     $('#SubmitStatus').html("Reading file...");
                     var reader = new FileReader();
