@@ -101,7 +101,7 @@
             .table-like__item {
             width: 100%;
             clear: both;
-            transition: background-color 0.5s;
+            transition: background-color 0.25s;
             /*border-top: 1px solid;*/
             }
             .table-like__item:hover {
@@ -127,12 +127,18 @@
                 border: none !important;
             }
             .versionitem {
+            background-color: transparent;
             width: 90%;
             clear: both;
             font-size: 11px;
             border-bottom-style: solid;
             border-bottom-color: #565656;
             border-bottom-width: 1px;
+            transition: background-color 0.25s;
+            }
+            .versionitem:hover {
+            background-color: rgba(255,255,255,0.2);
+            /*border-top: 1px solid;*/
             }
             .versionitem > * {
             display: inline-block;
@@ -171,16 +177,29 @@
             .g-recaptcha {
                 margin-bottom: 10px;
             }
-
+            .dropdown {
+                transition: box-shadow 0.4s ease-in-out;
+                transition: transform 0.4s ease-in-out;
+                background-color: #00bc8c;
+                box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.8);
+                transform: translateY(0px);
+                z-index: 1000;
+            }
+            .dropdown * {
+                transition: background-color 0.4s ease-in-out;
+                z-index: 1000;
+            }
+            .Pulse {
+                box-shadow: 0px -5px 40px 0px rgba(0,0,0,0.8);
+                transform: translateY(7px);
+            }
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js" charset="utf-8"></script>
         <script src="https://npmcdn.com/isotope-layout@3/dist/isotope.pkgd.js" charset="utf-8"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js" charset="utf-8"></script>
         <script src="jquery.nicescroll.js" charset="utf-8"></script>
         <script src="underscore-min.js"></script>
         <script src="gh3.js" charset="utf-8"></script>
         <script src="moment.js" charset="utf-8"></script>
-        <script src="sha.js" charset="utf-8"></script>
         <script src="backbone-min.js" charset="utf-8"></script>
         <script src="pretty-json-min.js" charset="utf-8"></script>
         <script src="https://www.google.com/recaptcha/api.js" charset="utf-8"></script>
@@ -188,6 +207,10 @@
             var oncaptcha = function(response) {
                 //console.log(response);
                 $('#SubmitVPack').removeAttr('disabled');
+            };
+            var onrcexpired = function(response) {
+                //console.log(response);
+                $('#SubmitVPack').attr('disabled', '');
             };
         </script>
     </head>
@@ -211,7 +234,7 @@
                 <li><a href="https://github.com/vvvvpm/vpm/releases/latest">Download vpm</a></li>
                 <li><a href="https://github.com/vvvvpm/vpdb">vpdb repo</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Submit vpack<span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" id="SubmitToggle" data-toggle="dropdown" role="button" aria-expanded="false">Submit vpack<span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li>Submit a new pack, new version of a pack or update an existing version. Author and Packname should be File/Folder path complaint otherwise you might get an error. Email is used to track back who's committed what.</li>
                     <li class="divider"></li>
@@ -230,7 +253,7 @@
                             <input type="file" id="SubmitFile" class="form-control" accept=".vpack" />
                             <textarea id="SubmitCommit" class="form-control" placeholder="Commit message" rows="3"></textarea>
                           </div>
-                          <div class="g-recaptcha" data-sitekey="6LcjsRcUAAAAAJenAAQV37RgSLvQmK7Zs17Ngzi5" data-callback="oncaptcha" data-theme="dark"></div>
+                          <div class="g-recaptcha" data-sitekey="6LcjsRcUAAAAAJenAAQV37RgSLvQmK7Zs17Ngzi5" data-callback="oncaptcha" data-theme="dark" data-expired-callback="onrcexpired"></div>
                           <a href="#" id="SubmitVPack" class="btn btn-default" disabled>Submit</a>
                           <p id="SubmitStatus">Be cool. Don't mess things up. Messed up stuff will be reverted anyway.</p>
                         </form>
@@ -301,6 +324,7 @@
             var vpdb = new Gh3.Repository("vpdb", vpmuser);
             var vpackfiles = [];
             var vpackhashes = [];
+            var $submitmenu = $('.dropdown');
 
             vpdb.fetch(function (err, res) { if(err) { throw "outch ..." }
                 vpdb.fetchBranches(function (err, res) { if(err) { throw "outch ..." }
@@ -329,6 +353,11 @@
                                 pack.name + '</div><div class="versions"><ul class="versionlist"></ul></div></li>';
                             var $item = $(appendhtml);
                             $table.append($item).isotope('appended', $item);
+                            $item.click(function() {
+                                $('#SubmitAuthor').val(author.name);
+                                $('#SubmitName').val(pack.name);
+                                $submitmenu.addClass("Pulse");
+                            });
                             var $vlist = $item.find('.versionlist').isotope({
                               layoutMode: 'vertical',
                               getSortData: {
@@ -357,6 +386,12 @@
                                         );
                                         $vitem.find('.name');
                                         $vlist.append($vitem).isotope('appended', $vitem);
+                                        $vitem.click(function() {
+                                            $('#SubmitAuthor').val(author.name);
+                                            $('#SubmitName').val(pack.name);
+                                            $('#SubmitVersion').val(version.name);
+                                            $submitmenu.addClass("Pulse");
+                                        });
                                         $vlist.isotope({
                                             sortBy : 'date',
                                             sortAscending: false
