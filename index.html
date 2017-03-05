@@ -170,9 +170,19 @@
                 font-size: 9px;
             }
             #SubmitStatus {
+                box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+                background-color: #303030;
                 float: right;
-                width: 75%;
+                width: 100%;
+                /* min-width: 275px; */
                 overflow: auto;
+                /* margin-left: 130px !important; */
+                position: relative;
+                left: 95px;
+                top: -45px;
+                margin-bottom: -49px;
+                padding: 15px;
+                padding-top: 5px;
             }
             .g-recaptcha {
                 margin-bottom: 10px;
@@ -389,7 +399,7 @@
                                         $vitem.click(function() {
                                             $('#SubmitAuthor').val(author.name);
                                             $('#SubmitName').val(pack.name);
-                                            $('#SubmitVersion').val(version.name);
+                                            $('#SubmitVersion').val(version.name.slice(0, -6));
                                             $submitmenu.addClass("Pulse");
                                         });
                                         $vlist.isotope({
