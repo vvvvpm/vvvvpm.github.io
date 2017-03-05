@@ -186,7 +186,8 @@
         <script src="https://www.google.com/recaptcha/api.js" charset="utf-8"></script>
         <script type="text/javascript">
             var oncaptcha = function(response) {
-                console.log(response);
+                //console.log(response);
+                $('#SubmitVPack').removeAttr('disabled');
             };
         </script>
     </head>
@@ -229,7 +230,7 @@
                             <input type="file" id="SubmitFile" class="form-control" accept=".vpack" />
                             <textarea id="SubmitCommit" class="form-control" placeholder="Commit message" rows="3"></textarea>
                           </div>
-                          <div class="g-recaptcha" data-sitekey="6LcjsRcUAAAAAJenAAQV37RgSLvQmK7Zs17Ngzi5" data-callback="oncaptcha" data-theme="dark" data-size="compact"></div>
+                          <div class="g-recaptcha" data-sitekey="6LcjsRcUAAAAAJenAAQV37RgSLvQmK7Zs17Ngzi5" data-callback="oncaptcha" data-theme="dark"></div>
                           <a href="#" id="SubmitVPack" class="btn btn-default" disabled>Submit</a>
                           <p id="SubmitStatus">Be cool. Don't mess things up. Messed up stuff will be reverted anyway.</p>
                         </form>
@@ -438,6 +439,7 @@
                                 el: $('#SubmitStatus'),
                                 data: response
                             });
+                            $('#SubmitStatus').preprend("Success:<br />");
                             $('#SubmitVPack').removeAttr('disabled');
                         }).fail(function(jqXHR, response) {
                             $('#SubmitStatus').html("");
@@ -445,7 +447,7 @@
                                 el: $('#SubmitStatus'),
                                 data: jqXHR.responseJSON
                             });
-                            //$('#SubmitStatus').html("Error: " + jqXHR.responseText);
+                            $('#SubmitStatus').preprend("Error:<br />");
                             $('#SubmitVPack').removeAttr('disabled');
                         });
                     };
