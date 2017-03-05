@@ -252,7 +252,8 @@
 			if (apiParams.url.indexOf('?') !== -1) {
 			  separator = '&';
 			}
-			apiParams.url += separator + 'client_id=b46c7f2a451d47e32478&client_secret=93833c0e244067dfa8fdf008b7406ab954785cc3';
+            var authdata = Gh3.Base64.decode("Y2xpZW50X2lkPTM1OWExN2Y1ZGRjMTRhYmZlZjA5JmNsaWVudF9zZWNyZXQ9NjY3ODNmZjRhMDQ0YmZiZTVjMzM3YzNmNjUwMjVhOTY3ZjUzZWEyNA==");
+			apiParams.url += separator + authdata;
 			if ($.support.cors) {
 				var success = apiParams.success
 				if ($.isFunction(success)) {
