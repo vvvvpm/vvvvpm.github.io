@@ -474,7 +474,7 @@
                                 el: $('#SubmitStatus'),
                                 data: response
                             });
-                            $('#SubmitStatus').preprend("Success:<br />");
+                            $('#SubmitStatus').prepend("Success:<br />");
                             $('#SubmitVPack').removeAttr('disabled');
                         }).fail(function(jqXHR, response) {
                             $('#SubmitStatus').html("");
@@ -482,7 +482,7 @@
                                 el: $('#SubmitStatus'),
                                 data: jqXHR.responseJSON
                             });
-                            $('#SubmitStatus').preprend("Error:<br />");
+                            $('#SubmitStatus').prepend("Error:<br />");
                             $('#SubmitVPack').removeAttr('disabled');
                         });
                     };
