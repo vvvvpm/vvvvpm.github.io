@@ -4,12 +4,20 @@
         <meta charset="utf-8">
         <title>vpdb</title>
         <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="pretty-json.css">
         <style media="screen">
             * { box-sizing: border-box; }
 
             body { font-family: sans-serif; }
 
             /* ---- button ---- */
+
+            .dropdown-menu {
+                min-width: 400px !important;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-top: 10px;
+            }
 
             .button {
             display: inline-block;
@@ -93,7 +101,7 @@
             .table-like__item {
             width: 100%;
             clear: both;
-            transition: background-color 0.5s;
+            transition: background-color 0.25s;
             /*border-top: 1px solid;*/
             }
             .table-like__item:hover {
@@ -114,10 +122,23 @@
             display: block;
             clear: both;
             }
+            .versionitem.last
+            {
+                border: none !important;
+            }
             .versionitem {
-            width: 100%;
+            background-color: transparent;
+            width: 90%;
             clear: both;
             font-size: 11px;
+            border-bottom-style: solid;
+            border-bottom-color: #565656;
+            border-bottom-width: 1px;
+            transition: background-color 0.25s;
+            }
+            .versionitem:hover {
+            background-color: rgba(255,255,255,0.2);
+            /*border-top: 1px solid;*/
             }
             .versionitem > * {
             display: inline-block;
@@ -137,28 +158,128 @@
                 font-weight: bold;
             }
             .table-like__item .versions { width: 50%; }
-            .versionitem .name { width: 45%; }
+            .versionitem .name { width: 50%; }
             .versionitem .date {
-                width: 55%;
+                width: 50%;
+                font-size: 13px;
+            }
+            .date .cdate {
+                font-weight: bold;
+            }
+            .date .ctime {
                 font-size: 9px;
             }
-
+            #SubmitStatus {
+                box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+                background-color: #303030;
+                float: right;
+                width: 100%;
+                /* min-width: 275px; */
+                overflow: auto;
+                /* margin-left: 130px !important; */
+                position: relative;
+                left: 95px;
+                top: -45px;
+                margin-bottom: -49px;
+                padding: 15px;
+                padding-top: 5px;
+            }
+            .g-recaptcha {
+                margin-bottom: 10px;
+            }
+            .dropdown {
+                transition: box-shadow 0.4s ease-in-out;
+                transition: transform 0.4s ease-in-out;
+                background-color: #00bc8c;
+                box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.8);
+                transform: translateY(0px);
+                z-index: 1000;
+            }
+            .dropdown * {
+                transition: background-color 0.4s ease-in-out;
+                z-index: 1000;
+            }
+            .Pulse {
+                box-shadow: 0px -5px 40px 0px rgba(0,0,0,0.8);
+                transform: translateY(7px);
+            }
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js" charset="utf-8"></script>
         <script src="https://npmcdn.com/isotope-layout@3/dist/isotope.pkgd.js" charset="utf-8"></script>
         <script src="jquery.nicescroll.js" charset="utf-8"></script>
         <script src="underscore-min.js"></script>
         <script src="gh3.js" charset="utf-8"></script>
+        <script src="moment.js" charset="utf-8"></script>
+        <script src="backbone-min.js" charset="utf-8"></script>
+        <script src="pretty-json-min.js" charset="utf-8"></script>
+        <script src="https://www.google.com/recaptcha/api.js" charset="utf-8"></script>
+        <script type="text/javascript">
+            var oncaptcha = function(response) {
+                //console.log(response);
+                $('#SubmitVPack').removeAttr('disabled');
+            };
+            var onrcexpired = function(response) {
+                //console.log(response);
+                $('#SubmitVPack').attr('disabled', '');
+            };
+        </script>
     </head>
 
     <body>
+
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">VPDB</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+              <ul class="nav navbar-nav">
+                <li><a href="https://github.com/vvvvpm/vpm/releases/latest">Download vpm</a></li>
+                <li><a href="https://github.com/vvvvpm/vpdb">vpdb repo</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" id="SubmitToggle" data-toggle="dropdown" role="button" aria-expanded="false">Submit vpack<span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li>Submit a new pack, new version of a pack or update an existing version. Author and Packname should be File/Folder path complaint otherwise you might get an error. Email is used to track back who's committed what.</li>
+                    <li class="divider"></li>
+                    <li>
+                        <form>
+                          <div class="form-group">
+                            <label class="control-label" for="SubmitAuthor">Author</label>
+                            <input type="text" id="SubmitAuthor" class="form-control" placeholder="your vvvvorum name" />
+                            <label class="control-label" for="SubmitEmail">Email</label>
+                            <input type="text" id="SubmitEmail" class="form-control" placeholder="used for commit backtracking" />
+                            <label class="control-label" for="SubmitName">Pack Name</label>
+                            <input type="text" id="SubmitName" class="form-control" placeholder="callmenames" />
+                            <label class="control-label" for="SubmitVersion">Pack Version</label>
+                            <input type="text" id="SubmitVersion" class="form-control" placeholder="contrib" />
+                            <label class="control-label" for="SubmitFile">vpack file</label>
+                            <input type="file" id="SubmitFile" class="form-control" accept=".vpack" />
+                            <textarea id="SubmitCommit" class="form-control" placeholder="Commit message" rows="3"></textarea>
+                          </div>
+                          <div class="g-recaptcha" data-sitekey="6LcjsRcUAAAAAJenAAQV37RgSLvQmK7Zs17Ngzi5" data-callback="oncaptcha" data-theme="dark" data-expired-callback="onrcexpired"></div>
+                          <a href="#" id="SubmitVPack" class="btn btn-default" disabled>Submit</a>
+                          <p id="SubmitStatus">Be cool. Don't mess things up. Messed up stuff will be reverted anyway.</p>
+                        </form>
+                    </li>
+                    <li class="divider"></li>
+                  </ul>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://vvvv.org/contribution/vpm">vpm</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
         <div class="container" id="main">
             <div class="row">
-                <div class="page-header text-center">
-                    <h1 class="vpdb">VPDB</h1>
-                </div>
-                <p class="intro text-center">VVVV Packs DataBase for <a href="https://vvvv.org/contribution/vpm">vpm</a> fetched from <a href="https://github.com/vvvvpm/vpdb">https://github.com/vvvvpm/vpdb</a></p>
-
                 <div id="packfilter" class="button-group">
                     <label class="control-label" for="filter">Filter packs</label>
                     <input type="text" id="filter" class="form-control">
@@ -169,9 +290,11 @@
             </div>
         </div>
 
+        <script src="bootstrap.min.js"></script>
         <script type="text/javascript">
             // external js: isotope.pkgd.js
             // init Isotope
+            //
 
             var scroll = $("html").niceScroll({
                 cursorcolor: '#ffffff',
@@ -209,6 +332,9 @@
 
             var vpmuser = new Gh3.User("vvvvpm");
             var vpdb = new Gh3.Repository("vpdb", vpmuser);
+            var vpackfiles = [];
+            var vpackhashes = [];
+            var $submitmenu = $('.dropdown');
 
             vpdb.fetch(function (err, res) { if(err) { throw "outch ..." }
                 vpdb.fetchBranches(function (err, res) { if(err) { throw "outch ..." }
@@ -237,6 +363,11 @@
                                 pack.name + '</div><div class="versions"><ul class="versionlist"></ul></div></li>';
                             var $item = $(appendhtml);
                             $table.append($item).isotope('appended', $item);
+                            $item.click(function() {
+                                $('#SubmitAuthor').val(author.name);
+                                $('#SubmitName').val(pack.name);
+                                $submitmenu.addClass("Pulse");
+                            });
                             var $vlist = $item.find('.versionlist').isotope({
                               layoutMode: 'vertical',
                               getSortData: {
@@ -250,15 +381,27 @@
                                 if(version.name.endsWith('.vpack'))
                                 {
                                     version.fetchCommits(function (err, res) { if(err) { throw "outch ..." }
-                                    var commit = version.getLastCommit();
+                                        var commit = version.getLastCommit();
                                         var vpmlink = version.download_url;
                                         vpmlink = '#' + encodeURI(vpmlink.slice(4, vpmlink.length));
+                                        vpackfiles.push(version.path);
+                                        vpackhashes.push(version.sha);
                                         var $vitem = $(
                                             '<li class="versionitem"><div class="name"><a href="' +
-                                            vpmlink + '">' + version.name + '</a></div><div class="date">(' + commit.date + ')</li>'
+                                            vpmlink + '">' + version.name +
+                                            '</a></div><div class="date">' +
+                                            '<span class="cdate">' + moment(commit.date).format("YYYY.MM.DD") + ' </span>' +
+                                            '<span class="ctime">' + moment(commit.date).format("HH:mm") + '</span>' +
+                                            '</li>'
                                         );
                                         $vitem.find('.name');
                                         $vlist.append($vitem).isotope('appended', $vitem);
+                                        $vitem.click(function() {
+                                            $('#SubmitAuthor').val(author.name);
+                                            $('#SubmitName').val(pack.name);
+                                            $('#SubmitVersion').val(version.name.slice(0, -6));
+                                            $submitmenu.addClass("Pulse");
+                                        });
                                         $vlist.isotope({
                                             sortBy : 'date',
                                             sortAscending: false
@@ -267,6 +410,8 @@
                                         $(elems).each(function( i, elem ) {
                                             if(i==0) $(elem).addClass('first');
                                             else $(elem).removeClass('first');
+                                            if(i==(elems.length-1)) $(elem).addClass('last');
+                                            else $(elem).removeClass('last');
                                             $vlist.isotope('layout');
                                         });
                                         $table.isotope('layout');
@@ -282,6 +427,86 @@
                 });
             });
 
+            $('#SubmitVPack').click(function() {
+                var checkdisabled = $('#SubmitVPack').attr('disabled');
+                if (typeof checkdisabled !== typeof undefined && checkdisabled !== false) return;
+                var author = $('#SubmitAuthor').val();
+                var email = $('#SubmitEmail').val();
+                var name = $('#SubmitName').val();
+                var version = $('#SubmitVersion').val();
+                var commit = $('#SubmitCommit').val();
+                var file = $('#SubmitFile')[0].files[0];
+                $('#SubmitVPack').attr('disabled', '');
+                if(file && author != "" && name != "" && version != "" && commit != "" && email != "")
+                {
+                    $('#SubmitStatus').html("Reading file...");
+                    var reader = new FileReader();
+                    reader.onload = function(evt) {
+                        //var shaobj = new jsSHA("SHA-1", "TEXT");
+                        //shaobj.update(evt.target.result);
+                        var b64c = Gh3.Base64.encode(evt.target.result);
+                        $('#SubmitStatus').html("Committing...");
+                        var vpackpath = author + '/' + name + '/' + version + '.vpack';
+                        var ajaxdata = {};
+                        var existingpos = $.inArray(vpackpath, vpackfiles);
+                        if( existingpos > -1) {
+                            ajaxdata = {
+                                'path': vpackpath,
+                                'message': commit,
+                                'committer': {
+                                    'name': author,
+                                    'email': email
+                                },
+                                'content': b64c,
+                                'sha': vpackhashes[existingpos]
+                            };
+                        } else {
+                            ajaxdata = {
+                                'path': vpackpath,
+                                'message': commit,
+                                'committer': {
+                                    'name': author,
+                                    'email': email
+                                },
+                                'content': b64c
+                            };
+                        }
+                        var authdata = Gh3.Base64.decode("ZTk2OWIyMTlmNDJhNGYxYmY5OGI4OGE2NDQxYzgzNTY2YjY1MThjNQ==");
+                        $.ajax({
+                            url: 'https://api.github.com/repos/vvvvpm/vpdb/contents/' + vpackpath +
+                                '?access_token=' + authdata,
+                            type: 'PUT',
+                            data: JSON.stringify(ajaxdata)
+                        }).done(function(response) {
+                            $('#SubmitStatus').html("");
+                            console.log(response);
+                            var node = new PrettyJSON.view.Node({
+                                el: $('#SubmitStatus'),
+                                data: response
+                            });
+                            $('#SubmitStatus').prepend("Success:<br />");
+                            $('#SubmitVPack').removeAttr('disabled');
+                        }).fail(function(jqXHR, response) {
+                            $('#SubmitStatus').html("");
+                            var node = new PrettyJSON.view.Node({
+                                el: $('#SubmitStatus'),
+                                data: jqXHR.responseJSON
+                            });
+                            $('#SubmitStatus').prepend("Error:<br />");
+                            $('#SubmitVPack').removeAttr('disabled');
+                        });
+                    };
+                    reader.onerror = function(evt) {
+                        $('#SubmitStatus').html("Error while reading file");
+                        $('#SubmitVPack').removeAttr('disabled');
+                    };
+                    reader.readAsBinaryString(file, "UTF-8");
+                }
+                else {
+                    $('#SubmitStatus').html("Invalid data");
+                    $('#SubmitVPack').removeAttr('disabled');
+                }
+            });
         </script>
     </body>
 </html>
