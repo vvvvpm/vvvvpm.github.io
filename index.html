@@ -311,6 +311,11 @@
                 pack: '.pack'
               }
             });
+            if(window.location.hash) {
+                setTimeout(function() {
+                    console.log(window.location.hash);
+                }, 1000);
+            }
             $('#filter').on('input', function() {
                 var filterVal = $('#filter').val().toLowerCase();
                 $table.isotope({ filter: function() {
@@ -334,6 +339,7 @@
             var vpdb = new Gh3.Repository("vpdb", vpmuser);
             var vpackfiles = [];
             var vpackhashes = [];
+            var packcount = 0;
             var $submitmenu = $('.dropdown');
 
             vpdb.fetch(function (err, res) { if(err) { throw "outch ..." }
