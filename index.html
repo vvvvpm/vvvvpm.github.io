@@ -329,7 +329,8 @@
                     {
                         var filterValV = request[1];
                         filtered.forEach(function(item, i) {
-                            $(item).isotope({ filter: function() {
+                            $vlist = $(item).find('.versionlist');
+                            $vlist.isotope({ filter: function() {
                                 var atext = $(this).find('.name').text().toLowerCase();
                                 var matched = atext.includes(filterValV);
                                 return matched;
