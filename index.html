@@ -348,6 +348,8 @@
                     {
                         $vlist = $(this).find('.versionlist');
                         $vlist.isotope({ filter: '*'});
+                        $table.isotope('layout');
+                        $vlist.isotope('layout');
                     }
                     return atext.includes(filterVal) || ptext.includes(filterVal);
                 }});
