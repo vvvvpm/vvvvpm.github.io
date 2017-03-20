@@ -344,6 +344,11 @@
                 $table.isotope({ filter: function() {
                     var atext = $(this).find('.author').text().toLowerCase();
                     var ptext = $(this).find('.pack').text().toLowerCase();
+                    if(filterVal == "")
+                    {
+                        $vlist = $(this).find('.versionlist');
+                        $vlist.isotope({ filter: '*'});
+                    }
                     return atext.includes(filterVal) || ptext.includes(filterVal);
                 }});
                 setTimeout(function(){ scroll.resize(); }, 400);
