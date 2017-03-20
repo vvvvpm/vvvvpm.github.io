@@ -313,7 +313,7 @@
             });
             if(window.location.hash) {
                 setTimeout(function() {
-                    console.log(window.location.hash);
+                    console.log(window.location.hash.slice(1, window.location.hash.length));
                 }, 1000);
             }
             $('#filter').on('input', function() {
