@@ -313,14 +313,29 @@
             });
             if(window.location.hash) {
                 setTimeout(function() {
-                    var filterVal = window.location.hash.slice(1, window.location.hash.length);
+                    var request = window.location.hash.slice(1, window.location.hash.length).split("/");
+                    var filterVal = request[0];
                     $('#filter').val(filterVal);
+                    var filtered = [];
                     $table.isotope({ filter: function() {
                         var atext = $(this).find('.author').text().toLowerCase();
                         var ptext = $(this).find('.pack').text().toLowerCase();
-                        return atext.includes(filterVal) || ptext.includes(filterVal);
+                        var matched = atext.includes(filterVal) || ptext.includes(filterVal);
+                        if(matched) filtered.push(this);
+                        return matched;
                     }});
                     setTimeout(function(){ scroll.resize(); }, 400);
+                    if(request.length > 1)
+                    {
+                        var filterValV = request[1];
+                        filtered.forEach(function(item, i) {
+                            $(item).isotope({ filter: function() {
+                                var atext = $(this).find('.name').text().toLowerCase();
+                                var matched = atext.includes(filterValV);
+                                return matched;
+                            }});
+                        });
+                    }
                 }, 2000);
             }
             $('#filter').on('input', function() {
