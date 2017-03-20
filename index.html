@@ -313,8 +313,15 @@
             });
             if(window.location.hash) {
                 setTimeout(function() {
-                    console.log(window.location.hash.slice(1, window.location.hash.length));
-                }, 1000);
+                    var filterVal = window.location.hash.slice(1, window.location.hash.length);
+                    $('#filter').val(filterVal);
+                    $table.isotope({ filter: function() {
+                        var atext = $(this).find('.author').text().toLowerCase();
+                        var ptext = $(this).find('.pack').text().toLowerCase();
+                        return atext.includes(filterVal) || ptext.includes(filterVal);
+                    }});
+                    setTimeout(function(){ scroll.resize(); }, 400);
+                }, 2000);
             }
             $('#filter').on('input', function() {
                 var filterVal = $('#filter').val().toLowerCase();
